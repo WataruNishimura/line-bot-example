@@ -1,5 +1,5 @@
 import jwt
-from jwt.algorithms import RSSAAlgorithm
+from jwt.algorithms import RSAAlgorithm
 import time
 import json
 from pathlib import Path
@@ -8,10 +8,8 @@ from pathlib import Path
 def getJWTtoken(directory):
   filepath = Path(directory)
   private_key_file = open(filepath / "private_key.json", mode="rt", encoding="utf-8")
-  public_key_file = open(filepath / "public_key.json", mode="rt", encoding="utf-8")
   header_file = open(filepath / "header.json", mode="rt", encoding="utf_8")
   private_key = json.load(private_key_file)
-  public_key = json.load(public_key_file)
   header = json.load(header_file)
   
   payload = {
