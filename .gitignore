@@ -5,3 +5,4 @@ header.json
 public_key.json
 credentials.json
 .env
+.DS_Store
