@@ -3,7 +3,7 @@ from jwt.algorithms import RSAAlgorithm
 import time
 import json
 from pathlib import Path
-
+import os
 
 def getJWTtoken(directory):
   filepath = Path(directory)
@@ -13,8 +13,8 @@ def getJWTtoken(directory):
   header = json.load(header_file)
   
   payload = {
-    "iss": "1656847145",
-    "sub": "1656847145",
+    "iss": os.getenv("CLIENT_ID"),
+    "sub": os.getenv("CLIENT_ID"),
     "aud": "https://api.line.me/",
     "exp": int(time.time()) + (60*30),
     "token_exp": 60*60*24*30
