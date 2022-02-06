@@ -4,3 +4,4 @@ private_key.json
 header.json
 public_key.json
 credentials.json
+.env

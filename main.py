@@ -1,6 +1,5 @@
 import json
-import optparse
-from urllib import parse
+import config
 from modules.jwt import getJWTtoken
 from fastapi import FastAPI
 import requests
