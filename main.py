@@ -7,6 +7,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 import uvicorn
+from modules.api import getValidChannelAccessToken
 
 messaging_api_url = "https://api.line.me/oauth2/v2.1"
 
@@ -23,6 +24,9 @@ if __name__ == "__main__":
     "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
     "client_assertion": jwt 
   }
+
+  kids = getValidChannelAccessToken(jwt=jwt)
+
   response = requests.post(messaging_api_url + "/token" , data=payload)
 
   token_dictionary = json.loads(response.content.decode())
@@ -36,6 +40,10 @@ if __name__ == "__main__":
 
   ref = db.reference("line")
   ref.set({
-    #"token": token_dictionary.access_token,
-    #"key_id": token_dictionary.key_id
+    "tokens": [
+      {
+        #"access_token": token_dictionary["access_token"],
+        #"kid": token_dictionary["kid"]
+      }
+    ]
   })
