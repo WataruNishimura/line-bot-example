@@ -20,3 +20,4 @@ Status: working
 - .envファイルまたは環境変数にて、以下の定数の設定
   - `CLINET_ID` チャネルID
   - `CLIENT_SECRET` チャネルシークレット
+  - `MODE (default: development)` `production`か`development`を指定。
