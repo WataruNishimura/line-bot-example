@@ -22,7 +22,8 @@ def getJWTtoken(directory):
   private_key = json.load(private_key_file)
   header = json.load(header_file)
 
-  print(token_exp)
+  if(mode == "development"):
+    print("token expires_in is " + str(token_exp))
 
   payload = {
     "iss": os.getenv("CLIENT_ID"),
