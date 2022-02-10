@@ -1,7 +1,5 @@
 import json
 from statistics import mode
-from aiohttp import request
-from grpc import access_token_call_credentials
 import requests
 oauth_url_base = "https://api.line.me/oauth2/v2.1"
 api_url_base = "https://api.line.me/v2"
@@ -26,7 +24,10 @@ def getValidChannelAccessToken(jwt):
   }
   response = requests.get(oauth_url_base + "/tokens/kid", params=params)
   dict = json.loads(response.content.decode())
-  return dict["kids"]
+  if(dict["kids"]):
+    return dict["kids"]
+  else:
+    return []
 
 def setWebhookEndpoint(access_token, endpointUrl):
   headers = {

@@ -1,8 +1,9 @@
-from asyncio.log import logger
 from inspect import signature
 import json
+import logging
 import os
-from traceback import print_tb
+import re
+from tkinter import EventType
 import config 
 from modules.jwt import getJWTtoken
 from fastapi import FastAPI, Request, Response, Header
@@ -16,7 +17,6 @@ import base64
 import hashlib
 import hmac
 from pydantic import BaseModel
-import logging
 
 messaging_api_url = "https://api.line.me/oauth2/v2.1"
 
@@ -24,11 +24,29 @@ mode = os.getenv("MODE") if os.getenv("MODE") else "development"
 channel_secret = os.getenv("CLIENT_SECRET")
 app = FastAPI()
 
-
-logger = logging.getLogger("uvicorn")
 class WebhookData(BaseModel):
   destination: str
   events: list
+
+async def webhook_handler(request: Request, response: Response, x_line_signature, webhook_input: WebhookData):
+  body = await request.body()
+  body = body.decode("utf-8")
+  events = webhook_input.events
+  logger = logging.getLogger("uvicorn")
+  if(events == []):
+    if(x_line_signature):
+      hash = hmac.new(channel_secret.encode("utf-8"), body.encode("utf-8"), hashlib.sha256).digest()
+      signature = base64.b64encode(hash)
+      if(signature.decode("utf-8") == x_line_signature):
+        logger.info("LINE Sinature is valid.")
+        return
+      else:
+        logger.error("Invalid message signature")
+        response.status_code = 400
+        return
+    response.status_code = 403
+    logger.error("No x-line-sinature spcified.")
+    return 
 
 @app.on_event("startup")
 async def startup():
@@ -92,17 +110,14 @@ async def root():
 
 @app.post("/webhook", status_code=200)
 async def webhook(
+    webhook_input: WebhookData,
     request: Request,
     response: Response,
     content_length: int = Header(...),
     x_line_signature: str = Header("x-ling-signature"),
 ):
-  logger.log(level=1, msg=request.headers)
-  if(content_length > 1_000_000):
-    response.status_code = 400
-    return {"result": "Content too long"}
-  if(x_line_signature):
-    return response
+  await webhook_handler(request=request, response=response, x_line_signature=x_line_signature, webhook_input=webhook_input)
+  return 
 
 if __name__ == "__main__":
 
