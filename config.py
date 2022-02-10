@@ -8,4 +8,4 @@ MODE = os.getenv("MODE")
 HOST = os.getenv("HOST")
 
 if __name__ == "__main__":
-  print(CLIENT_ID, CLIENT_SECRET)
+  print(CLIENT_ID, CLIENT_SECRET, MODE, HOST)
