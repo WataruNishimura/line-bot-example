@@ -11,9 +11,9 @@ mode = os.getenv("MODE") if os.getenv("MODE") else "development"
 token_exp = 60*60*24*7 # 60s 60min 24hour 7days
 
 if(mode == "development") :
-  token_exp = 60*60*24*7 # 60s 60min 24hour 1day
+  token_exp = 60*60*24*1 # 60s 60min 24hour 1day
 elif( mode=="production" ):
-  token_exp = 60*60*24*7 # 60s 60min 24hour 30day
+  token_exp = 60*60*24*30 # 60s 60min 24hour 30day
 
 def getJWTtoken(directory):
   filepath = Path(directory)
