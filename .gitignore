@@ -7,3 +7,6 @@ credentials.json
 .env
 .DS_Store
 *.log
+
+# for VSCode
+.vscode
