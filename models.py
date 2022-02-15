@@ -2,7 +2,7 @@
 from cgitb import text
 from enum import Enum
 from optparse import Option
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
 
 
@@ -18,7 +18,7 @@ class MentioneesObject(BaseModel):
   userId: str
 
 class MentionObject(BaseModel):
-  mentionees: list[MentioneesObject]
+  mentionees: List[MentioneesObject]
 
 class ContentProviderObject(BaseModel):
   type: str
@@ -36,7 +36,7 @@ class MessageObject(BaseModel):
     contentProvider: Optional[ContentProviderObject]
     imageSet: Optional[ImageSetObject]
     text: Optional[str]
-    emojis: Optional[list[EmojiObject]]
+    emojis: Optional[List[EmojiObject]]
     mention: Optional[MentionObject]
     duration: Optional[int]
     fileName: Optional[str]
