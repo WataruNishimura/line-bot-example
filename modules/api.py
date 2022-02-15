@@ -1,12 +1,11 @@
-from asyncio.log import logger
 import json
-from urllib import response
+from typing import Dict, List, Optional
 import requests
-from urllib3 import Retry
 from models import MessageObject, UserProfile
 
 oauth_url_base = "https://api.line.me/oauth2/v2.1"
 api_url_base = "https://api.line.me/v2"
+api__auth_url_base = "https://api.line.me/oauth2/v2.1"
 
 class Singleton(object):
     def __new__(cls, *args, **kargs):
@@ -29,7 +28,7 @@ class MessagingApi(Singleton):
           logger.error(response.content)
           return
     
-    def replyMessage(self, replyToken: str, messages: list[dict]):
+    def replyMessage(self, replyToken: str, messages: List[dict]):
         headers = {"Authorization": f"Bearer {self.access_token}"}
         payload = {
           "replyToken": replyToken,
@@ -49,7 +48,38 @@ class MessagingApi(Singleton):
     def setAccessToken(self, access_token):
       self.access_token = access_token
 
-def isValidChannelAccessToken(access_token):
+def issueChannelAccessToken(jwt) -> Optional[Dict]:
+    """issue channel acces token to request line oauth2 api with JSON Web Token
+
+    Args:
+        jwt (str): JSON Web Token for authenication.
+
+    Returns:
+        Optional[Dict]: If request successes, return Dict includes "access_token" and "key_id". If error raised, return None.
+    """
+    payload = {
+        "grant_type": "client_credentials",
+        "client_assertion_type":
+        "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+        "client_assertion": jwt
+    }
+    response = requests.post(api__auth_url_base + "/", data=payload)
+    if(response.status_code == 200):
+      response_dictionary = json.loads(response.content.decode())
+      return response_dictionary
+    else:
+      print(f"{response.status_code}: {response.content}")
+      return
+
+def verifyChannelAccessToken(access_token) -> bool:
+    """Verify channel access token. 
+
+    Args:
+        access_token (str): channel access token.
+
+    Returns:
+        bool: If channel access token is valid, return True. If not, return False.
+    """
     params = {"access_token": access_token}
 
     response = requests.get(oauth_url_base + "/verify", params=params)
