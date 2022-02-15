@@ -1,6 +1,6 @@
-# LINE BOT EXAMPLE
+# Yattemasu
 
-LINE Messaging API を利用した開発基盤
+お店が開店しているか教えてくれるアプリ
 
 Status: working
 
